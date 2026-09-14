@@ -13,9 +13,21 @@ function App() {
   const [result, setResult] = useState("");
 
   async function getMatchup(type) {
-    // API CALL WILL GO HERE, AND WE WILL RETURN THE RESPONSE
-    return `Fake API response: You are fighting a ${type}-type Pokémon.`;
-  }
+    try {
+      const response = await fetch(`http://localhost:3001/api/matchup/${type}`);
+
+      if (!response.ok) {
+        return `Sorry, couldn't find data for type "${type}".`;
+      }
+
+      const data = await response.json();
+
+      return `You're fighting a ${data.opponentType}-type Pokémon. Effective against it: ${data.effectiveAgainstOpponent.join(", ")}`;
+    } catch (error) {
+      console.error(error);
+      return "Something went wrong reaching the server. Is the backend running?";
+    }
+}
 
   async function handleTypeClick(type) {
     const response = await getMatchup(type);

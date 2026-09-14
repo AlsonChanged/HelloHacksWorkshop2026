@@ -27,23 +27,9 @@ app.get("/api/matchup/:pokemonType", async (req, res) => {
       effectiveTypes.push(typeData.name);
     }
 
-    const halfDamageTypes = [];
-    for (let i = 0; i < damageRelations.half_damage_to.length; i++) {
-      const typeData = damageRelations.half_damage_to[i];
-      halfDamageTypes.push(typeData.name);
-    }
-
-    const noDamageTypes = [];
-    for (let i = 0; i < damageRelations.no_damage_to.length; i++) {
-      const typeData = damageRelations.no_damage_to[i];
-      noDamageTypes.push(typeData.name);
-    }
-
     const response = {
       opponentType: pokemonType,
       effectiveAgainstOpponent: effectiveTypes,
-      opponentDealsHalfDamageTo: halfDamageTypes,
-      opponentDealsNoDamageTo: noDamageTypes,
     };
 
     res.json(response);
