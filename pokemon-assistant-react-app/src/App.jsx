@@ -25,7 +25,7 @@ function App() {
       return `You're fighting a ${data.opponentType}-type Pokémon. Effective against it: ${data.effectiveAgainstOpponent.join(", ")}`;
     } catch (error) {
       console.error(error);
-      return "Something went wrong reaching the server. Is the backend running?";
+      return "Something went wrong reaching the server.";
     }
 }
 
