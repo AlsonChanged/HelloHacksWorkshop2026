@@ -2,43 +2,37 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
+const PORT = process.env.PORT || 5001;
 
-// Allow the React frontend to call this backend.
+// Middleware
 app.use(cors());
+app.use(express.json());
 
+// GET endpoint to fetch Pokemon type matchup details from PokeAPI
 app.get("/api/matchup/:pokemonType", async (req, res) => {
   try {
-    const pokemonType = req.params.pokemonType.toLowerCase();
-    const url = `https://pokeapi.co/api/v2/type/${pokemonType}`;
-
-    const pokeapiResponse = await fetch(url);
-
-    if (!pokeapiResponse.ok) {
-      return res.status(404).json({ error: `Type "${pokemonType}" not found` });
+    const { pokemonType } = req.params;
+    const response = await fetch(
+      `https://pokeapi.co/api/v2/type/${encodeURIComponent(pokemonType.toLowerCase())}`
+    );
+    if (!response.ok) {
+      return res.status(response.status).json({ error: "Pokemon type not found" });
     }
 
-    const pokeapiData = await pokeapiResponse.json();
+    const data = await response.json();
+    const half_damage_to = data.damage_relations?.half_damage_to?.map((t) => t.name) || [];
+    const double_damage_from = data.damage_relations?.double_damage_from?.map((t) => t.name) || [];
 
-    const damageRelations = pokeapiData.damage_relations;
-
-    const effectiveTypes = [];
-    for (let i = 0; i < damageRelations.double_damage_from.length; i++) {
-      const typeData = damageRelations.double_damage_from[i];
-      effectiveTypes.push(typeData.name);
-    }
-
-    const response = {
-      opponentType: pokemonType,
-      effectiveAgainstOpponent: effectiveTypes,
-    };
-
-    res.json(response);
+    res.json({
+      half_damage_to,
+      double_damage_from,
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to fetch Pokémon type data" });
+    res.status(500).json({ error: error.message });
   }
 });
 
-app.listen(3001, () => {
-  console.log("Server running on http://localhost:3001");
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
 });
