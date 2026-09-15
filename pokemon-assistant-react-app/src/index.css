@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+@theme {
+  --color-poke-red: #ee1515;
+  --color-fire: #f08030;
+  --color-water: #6890f0;
+  --color-grass: #78c850;
+  --color-ground: #e0c068;
+}
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
