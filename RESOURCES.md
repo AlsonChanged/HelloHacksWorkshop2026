@@ -311,3 +311,13 @@ This is what our API returns:
 
 Format this in a way that's useful to the user in a Pokemon Battle in plain text.
 ```
+
+## Additional Links
+
+https://ubcbiztech.notion.site/HelloHacks-Laptop-Setup-Guide-3d9d13df991180f7b3fbe8f558d65041
+
+https://tailwindcss.com/docs/installation/using-vite
+
+https://pokeapi.co/docs/v2
+
+https://pokeapi.co/
