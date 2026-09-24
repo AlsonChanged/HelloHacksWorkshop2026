@@ -160,6 +160,19 @@ Replace the contents of `index.css` with:
 @import "tailwindcss";
 ```
 
+Replace your `vite.config.js` file with:
+
+```js
+import react from ‘@vitejs/plugin-react’
+import { defineConfig } from ‘vite’
+import tailwindcss from ‘@tailwindcss/vite’
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+})
+```
+
 ---
 
 ## #12 Ask AI to add Tailwind styling
