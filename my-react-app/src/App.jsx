@@ -8,11 +8,51 @@ const types = [
   { name: 'Dragon', icon: '🐉', color: 'border-violet-200 bg-violet-50 text-violet-700' },
 ]
 
+function formatTypeNames(names) {
+  const formattedNames = names.map((name) => name.charAt(0).toUpperCase() + name.slice(1))
+
+  if (formattedNames.length === 0) return 'None'
+  if (formattedNames.length === 1) return formattedNames[0]
+  if (formattedNames.length === 2) return formattedNames.join(' and ')
+
+  return `${formattedNames.slice(0, -1).join(', ')}, and ${formattedNames.at(-1)}`
+}
+
 function App() {
   const [selectedType, setSelectedType] = useState(null)
+  const [matchup, setMatchup] = useState(null)
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
-  function handleTypeClick(type) {
+  async function getMatchup(type) {
+    try {
+      const response = await fetch(`http://localhost:5001/api/type/${type.toLowerCase()}`)
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`)
+      }
+
+      return await response.json()
+    } catch (error) {
+      console.error('Could not get matchup:', error)
+      throw error
+    }
+  }
+
+  async function handleTypeClick(type) {
     setSelectedType(type)
+    setMatchup(null)
+    setError('')
+    setIsLoading(true)
+
+    try {
+      const data = await getMatchup(type)
+      setMatchup(data)
+    } catch {
+      setError('Could not load matchup data. Make sure the backend is running on port 5001.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -59,9 +99,21 @@ function App() {
         </div>
 
         <div className="mt-7 min-h-6 border-t border-slate-100 pt-5 text-sm text-slate-500" aria-live="polite">
-          {selectedType
-            ? <p><span className="font-semibold text-slate-900">{selectedType}</span> selected. Ready to build your strategy.</p>
-            : <p>Select a type to get started.</p>}
+          {!selectedType && <p>Select a type to get started.</p>}
+          {isLoading && <p>Loading {selectedType} matchup…</p>}
+          {error && <p className="text-red-600">{error}</p>}
+          {matchup && (
+            <div className="space-y-3 text-slate-700">
+              <p>
+                <span className="font-semibold text-slate-900">Weak to: </span>
+                {formatTypeNames(matchup.double_damage_from)}. Use these move types for double damage.
+              </p>
+              <p>
+                <span className="font-semibold text-slate-900">Not very effective against: </span>
+                {formatTypeNames(matchup.half_damage_to)}. {selectedType} moves deal half damage to these types.
+              </p>
+            </div>
+          )}
         </div>
       </section>
     </main>
