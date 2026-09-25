@@ -11,6 +11,10 @@ const types = [
 function App() {
   const [selectedType, setSelectedType] = useState(null)
 
+  function handleTypeClick(type) {
+    setSelectedType(type)
+  }
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-50 px-5 py-10 text-slate-900">
       <section className="w-full max-w-xl rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:p-10">
@@ -37,22 +41,12 @@ function App() {
           {types.map((type) => {
             const isSelected = selectedType === type.name
 
-            function getMatchup(type) {
-              // API CALL WILL GO HERE, AND WE WILL RETURN THE RESPONSE
-              return `Fake API response: You are fighting a ${type}-type Pokémon.`;
-            }
-
-            function handleTypeClick(type) {
-              const response = getMatchup(type);
-              setSelected(response);
-            }
-
-            
             return (
               <button
                 key={type.name}
                 type="button"
-                onClick={() => handleTypeClick(type.name)}                aria-pressed={isSelected}
+                onClick={() => handleTypeClick(type.name)}
+                aria-pressed={isSelected}
                 className={`flex items-center gap-3 rounded-2xl border p-4 text-left font-semibold transition hover:-translate-y-0.5 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 ${type.color} ${
                   isSelected ? 'ring-2 ring-slate-900 ring-offset-2' : ''
                 }`}
